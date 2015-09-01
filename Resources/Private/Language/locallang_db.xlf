@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-08-31T15:47:36Z" product-name="tag_items">
+		<header/>
+		<body>
+			<trans-unit id="tags">
+				<source>Tags</source>
+			</trans-unit>
+			<trans-unit id="tx_tagitems_domain_model_tag">
+				<source>Tag</source>
+			</trans-unit>
+			<trans-unit id="tx_tagitems_domain_model_tag.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="extmng.tagPid">
+				<source>Storage PID to save tags</source>
+			</trans-unit>
+			<trans-unit id="tag_suggest">
+				<source>???: %s</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
