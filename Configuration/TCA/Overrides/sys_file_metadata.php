@@ -54,5 +54,5 @@ $additionalColumns = [
 	'sys_file_metadata',
 	'tags',
 	'',
-	'after:fe_groups'
+	'after:alternative'
 );
