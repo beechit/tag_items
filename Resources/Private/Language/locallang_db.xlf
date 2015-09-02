@@ -16,7 +16,7 @@
 				<source>Storage PID to save tags</source>
 			</trans-unit>
 			<trans-unit id="tag_suggest">
-				<source>???: %s</source>
+				<source>Tag not found, create new tag named: &lt;strong&gt;%s&lt;/strong&gt;</source>
 			</trans-unit>
 		</body>
 	</file>
