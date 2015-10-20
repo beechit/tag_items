@@ -10,7 +10,6 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
@@ -60,20 +59,34 @@ class TagsViewHelper extends AbstractViewHelper implements CompilableInterface {
 		$file = $arguments['file'];
 		$field = $arguments['field'];
 		$tags = [];
+		$sysLanguageUid = (int)$GLOBALS['TSFE']->sys_language_content;
 		self::getDatabaseConnection()->store_lastBuiltQuery = 1;
 		$resource = self::getDatabaseConnection()->exec_SELECT_mm_query(
-			'tx_tagitems_domain_model_tag.name',
+			'tx_tagitems_domain_model_tag.uid, tx_tagitems_domain_model_tag.name, tx_tagitems_domain_model_tag.sys_language_uid',
 			'tx_tagitems_domain_model_tag',
 			'tx_tagitems_domain_model_tag_mm',
 			'sys_file_metadata',
 			'AND sys_file_metadata.file = ' . (int)$file->getUid() . ' AND tx_tagitems_domain_model_tag_mm.tablenames = \'sys_file_metadata\' AND tx_tagitems_domain_model_tag_mm.fieldname = \'' . htmlspecialchars($field) . '\''
 		);
-//DebuggerUtility::var_dump(self::getDatabaseConnection()->debug_lastBuiltQuery);
+
 		if ($resource) {
 			while ($record = self::getDatabaseConnection()->sql_fetch_assoc($resource)) {
-				$tags[] = $record['name'];
+				if (in_array((int)$record['sys_language_uid'], [-1, $sysLanguageUid], TRUE)) {
+					$tags[] = $record['name'];
+				} elseif((int)$record['sys_language_uid'] === 0 && $sysLanguageUid > 0) {
+					$langRecord = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+						'name, hidden',
+						'tx_tagitems_domain_model_tag',
+						'sys_language_uid = ' . $sysLanguageUid . ' AND ' .
+						'l10n_parent = ' . $record['uid'] . ' AND deleted = 0'
+					);
+					if ($langRecord && !$langRecord['hidden']) {
+						$tags[] = $langRecord['name'];
+					}
+				}
 			}
 			self::getDatabaseConnection()->sql_free_result($resource);
+			$tags = array_unique($tags);
 		}
 
 		return $tags;

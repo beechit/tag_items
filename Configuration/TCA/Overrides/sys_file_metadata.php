@@ -31,6 +31,7 @@ $additionalColumns = [
 					'type' => 'suggest',
 					'default' => array(
 						'currentTable' => 'sys_file_metadata',
+						'addWhere' => 'AND tx_tagitems_domain_model_tag.sys_language_uid IN (-1,0)',
 						'receiverClass' => 'BeechIt\\TagItems\\Hooks\\SuggestReceiver'
 					),
 				),
